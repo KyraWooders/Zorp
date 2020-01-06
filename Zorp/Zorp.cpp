@@ -7,6 +7,7 @@
 #include <time.h>
 #include "Point2D.h"
 #include "GameDefines.h"
+#include "Game.h"
 
 void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
 {
@@ -30,53 +31,53 @@ void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
 	map[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
 }
 
-void drawWelcomeMessage()
-{
-	std::cout << INDENT << INDENT << "Welcome to ZORP!" << std::endl;
-	std::cout << INDENT << "ZORP is a game of adventure, danger, and low cunning." << std::endl;
-	std::cout << INDENT << "It is definitely not related to any other text-based adventure game." << std::endl << std::endl;
-}
-
-void drawMap(int map[MAZE_HEIGHT][MAZE_WIDTH], Point2D position)
-{
-	std::cout << std::endl;
-	std::cout << std::endl;
-	for (int y = 0; y < MAZE_HEIGHT; y++)
-	{
-		std::cout << INDENT;
-		for (int x = 0; x < MAZE_WIDTH; x++)
-		{
-			if (position.x == x && position.y == y)
-			{
-				std::cout << PLAYER_TILE;
-				continue;
-			}
-			switch (map[y][x])
-			{
-			case EMPTY:
-				std::cout << EMPTY_TITLE;
-				break;
-			case ENEMY:
-				std::cout << ENEMY_TITLE;
-				break;
-			case TREASURE:
-				std::cout << TREASURE_TITLE;
-				break;
-			case FOOD:
-				std::cout << FOOD_TITLE;
-				break;
-			case ENTRANCE:
-				std::cout << ENTRANCE_TITLE;
-				break;
-			case EXIT:
-				std::cout << EXIT_TITLE;
-				break;
-			}
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-}
+//void drawWelcomeMessage()
+//{
+//	std::cout << INDENT << INDENT << "Welcome to ZORP!" << std::endl;
+//	std::cout << INDENT << "ZORP is a game of adventure, danger, and low cunning." << std::endl;
+//	std::cout << INDENT << "It is definitely not related to any other text-based adventure game." << std::endl << std::endl;
+//}
+//
+//void drawMap(int map[MAZE_HEIGHT][MAZE_WIDTH], Point2D position)
+//{
+//	std::cout << std::endl;
+//	std::cout << std::endl;
+//	for (int y = 0; y < MAZE_HEIGHT; y++)
+//	{
+//		std::cout << INDENT;
+//		for (int x = 0; x < MAZE_WIDTH; x++)
+//		{
+//			if (position.x == x && position.y == y)
+//			{
+//				std::cout << PLAYER_TILE;
+//				continue;
+//			}
+//			switch (map[y][x])
+//			{
+//			case EMPTY:
+//				std::cout << EMPTY_TITLE;
+//				break;
+//			case ENEMY:
+//				std::cout << ENEMY_TITLE;
+//				break;
+//			case TREASURE:
+//				std::cout << TREASURE_TITLE;
+//				break;
+//			case FOOD:
+//				std::cout << FOOD_TITLE;
+//				break;
+//			case ENTRANCE:
+//				std::cout << ENTRANCE_TITLE;
+//				break;
+//			case EXIT:
+//				std::cout << EXIT_TITLE;
+//				break;
+//			}
+//		}
+//		std::cout << std::endl;
+//	}
+//	std::cout << std::endl;
+//}
 
 void drawRoomDesription(int roomType)
 {
@@ -103,63 +104,63 @@ void drawRoomDesription(int roomType)
 	}
 }
 
-void drawVaildDirections(Point2D position)
-{
-	std::cout << INDENT << "You can see paths leading to the " <<
-		((position.x > 0) ? "west, " : "") <<
-		((position.x < MAZE_WIDTH - 1) ? "east, " : "") <<
-		((position.y > 0) ? "north, " : "") <<
-		((position.y < MAZE_HEIGHT - 1) ? "south, " : "") << std::endl;
-}
-
-int getCommand()
-{
-	char input[50] = "\0";
-
-	std::cout << INDENT << "Enter a command:" << INDENT;
-
-	std::cin.clear();
-	std::cin.ignore(std::cin.rdbuf()->in_avail());
-
-	std::cin >> input;
-
-	bool bMove = false;
-	while (input)
-	{
-		if (strcmp(input, "move") == 0)
-		{
-			bMove = true;
-		}
-		else if (bMove == true)
-		{
-			if (strcmp(input, "north") == 0) 
-				return NORTH; 
-			if (strcmp(input, "south") == 0) 
-				return SOUTH; 
-			if (strcmp(input, "east") == 0) 
-				return EAST; 
-			if (strcmp(input, "west") == 0) 
-				return WEST;
-		}
-
-		if (strcmp(input, "look") == 0)
-		{
-			return LOOK;
-		}
-		
-		if (strcmp(input, "fight") == 0)
-		{
-			return FIGHT;
-		}
-
-		char next = std::cin.peek();
-		if (next == '\n' || next == EOF)
-			break;
-		std::cin >> input;
-	}
-
-	return 0;
-}
+//void drawVaildDirections(Point2D position)
+//{
+//	std::cout << INDENT << "You can see paths leading to the " <<
+//		((position.x > 0) ? "west, " : "") <<
+//		((position.x < MAZE_WIDTH - 1) ? "east, " : "") <<
+//		((position.y > 0) ? "north, " : "") <<
+//		((position.y < MAZE_HEIGHT - 1) ? "south, " : "") << std::endl;
+//}
+//
+//int getCommand()
+//{
+//	char input[50] = "\0";
+//
+//	std::cout << INDENT << "Enter a command:" << INDENT;
+//
+//	std::cin.clear();
+//	std::cin.ignore(std::cin.rdbuf()->in_avail());
+//
+//	std::cin >> input;
+//
+//	bool bMove = false;
+//	while (input)
+//	{
+//		if (strcmp(input, "move") == 0)
+//		{
+//			bMove = true;
+//		}
+//		else if (bMove == true)
+//		{
+//			if (strcmp(input, "north") == 0) 
+//				return NORTH; 
+//			if (strcmp(input, "south") == 0) 
+//				return SOUTH; 
+//			if (strcmp(input, "east") == 0) 
+//				return EAST; 
+//			if (strcmp(input, "west") == 0) 
+//				return WEST;
+//		}
+//
+//		if (strcmp(input, "look") == 0)
+//		{
+//			return LOOK;
+//		}
+//		
+//		if (strcmp(input, "fight") == 0)
+//		{
+//			return FIGHT;
+//		}
+//
+//		char next = std::cin.peek();
+//		if (next == '\n' || next == EOF)
+//			break;
+//		std::cin >> input;
+//	}
+//
+//	return 0;
+//}
 
 void waitForInput()
 {
@@ -170,67 +171,20 @@ void waitForInput()
 
 int main()
 { 
-	int rooms[MAZE_HEIGHT][MAZE_WIDTH];
+	/*int rooms[MAZE_HEIGHT][MAZE_WIDTH];
 
 	bool gameOver = false;
 	Point2D player = { 0, 0 };
 
-	initialize(rooms);
+	initialize(rooms);*/
+	Game game;
+	if (game.startup() == false)
+		return 0;
 
-	while (!gameOver)
+	while (!game.isGameOver())
 	{
-		system("cls");
-
-		drawWelcomeMessage();
-		
-		drawMap(rooms, player);
-
-		drawRoomDesription(rooms[player.y][player.x]);
-		if (rooms[player.y][player.x] == EXIT)
-		{
-			gameOver = true;
-			break;
-		}
-		
-		drawVaildDirections(player);
-		std::cout << INDENT << "Where to now?" << std::endl;
-
-		int direction = getCommand();
-
-		switch (direction)
-		{
-		case EAST:
-			if (player.x < MAZE_WIDTH - 1)
-				player.x++;
-			break;
-		case WEST:
-			if (player.x > 0)
-				player.x--;
-			break;
-		case NORTH:
-			if (player.y < MAZE_HEIGHT - 1)
-				player.y++;
-			break;
-		case SOUTH:
-			if (player.y > 0)
-				player.y--;
-			break;
-		case LOOK:
-			std::cout << INDENT << "You look around, but see nothing worth mentioning" << std::endl;
-			std::cout << INDENT << "Press 'Enter' to continue.";
-			waitForInput();
-			break;
-		case FIGHT:
-			std::cout << INDENT << "You could try to fight, but yyou don't have a weapon" << std::endl;
-			std::cout << INDENT << "Press 'Enter' to continue.";
-			waitForInput();
-			break;
-		default:
-			std::cout << INDENT << "You try, but you just can't do it." << std::endl;
-			std::cout << INDENT << "Press 'Enter' to continue.";
-			waitForInput();
-			break;
-		}
+		game.draw();
+		game.update();
 	}
 	std::cout << std::endl << INDENT << "Press 'Enter' to exit the program." << std::endl;
 	std::cin.clear();
