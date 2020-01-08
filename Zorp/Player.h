@@ -10,8 +10,6 @@ public:
 
 	void setPosition(Point2D position);
 
-	void setPosition();
-
 	Point2D getPosition();
 
 	void draw();

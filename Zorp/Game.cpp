@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <windows.h>
 
 Game::Game()
 {
@@ -15,9 +16,19 @@ Game::~Game()
 
 bool Game::startup()
 {
+	if (enableVirtualTerminal() == false)
+	{
+		std::cout << "The virtual terminal processing mode could not be activated." << std::endl;
+		std::cout << "Press 'Enter' to exit." << std::endl;
+		std::cin.get();
+		return false;
+	}
+
 	initializeMap();
 
 	m_player.setPosition(Point2D{ 0,0 });
+	
+	drawWelcomeMessage();
 
 	return true;
 }
@@ -27,9 +38,32 @@ bool Game::isGameOver()
 	return m_gameOver;
 }
 
+bool Game::enableVirtualTerminal()
+{
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hOut == INVALID_HANDLE_VALUE)
+	{
+		return false;
+	}
+
+	DWORD dwMode = 0;
+	if (!GetConsoleMode(hOut, &dwMode))
+	{
+		return false;
+	}
+
+	dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	if (!SetConsoleMode(hOut, dwMode))
+	{
+		return false;
+	}
+	return true;
+}
+
 void Game::initializeMap()
 {
 	srand(time(nullptr));
+
 	for (int y = 0; y < MAZE_HEIGHT; y++)
 	{
 		for (int x = 0; x < MAZE_WIDTH; x++)
@@ -48,38 +82,33 @@ void Game::initializeMap()
 
 void Game::drawWelcomeMessage()
 {
-	std::cout << INDENT << INDENT << "Welcome to ZORP!" << std::endl;
+	std::cout << TITLE << MAGENTA << "Welcome to ZORP!" << RESET_COLOR << std::endl;
 	std::cout << INDENT << "ZORP is a game of adventure, danger, and low cunning." << std::endl;
 	std::cout << INDENT << "It is definitely not related to any other text-based adventure game." << std::endl << std::endl;
 }
 
 void Game::drawMap()
 {
-	Point2D position = m_player.getPosition();
+	Point2D position = { 0, 0 };
 
-	std::cout << std::endl;
-	std::cout << std::endl;
-	for (int y = 0; y < MAZE_HEIGHT; y++) 
+	std::cout << RESET_COLOR;
+	for (position.y = 0; position.y < MAZE_HEIGHT; position.y++)
 	{
 		std::cout << INDENT;
-		for (int x = 0; x < MAZE_WIDTH; x++)
+		for (position.x = 0; position.x < MAZE_WIDTH; position.x++)
 		{
-			if (position.x == x && position.y == y)
-			{
-				m_player.draw();
-				continue;
-			}
-			m_map[y][x].draw();
+			m_map[position.y][position.x].draw();
 		}
 		std::cout << std::endl;
 	}
-	std::cout << std::endl;
 }
 
 void Game::drawValidDirections()
 {
 	Point2D position = m_player.getPosition();
 
+	std::cout << RESET_COLOR;
+	std::cout << CSI << MOVEMENT_DESC_Y + 1 << ";" << 0 << "H";
 	std::cout << INDENT << "You can see paths leading to the " <<
 		((position.x > 0) ? "west, " : "") <<
 		((position.x < MAZE_WIDTH - 1) ? "east, " : "") <<
@@ -90,11 +119,15 @@ void Game::drawValidDirections()
 int Game::getCommand()
 {
 	char input[50] = "\0";
-	std::cout << INDENT << "Enter a command:" << INDENT;
+	std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+	std::cout << CSI << "4M";
+	std::cout << INDENT << "Enter a command:";
+	std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
 	std::cin.clear();
 	std::cin.ignore(std::cin.rdbuf()->in_avail());
 
 	std::cin >> input;
+	std::cout << RESET_COLOR;
 
 	bool bMove = false;
 	while (input)
@@ -155,9 +188,9 @@ void Game::update()
 void Game::draw()
 {
 	Point2D playerPos = m_player.getPosition();
-	system("cls");
-	drawWelcomeMessage();
 	drawValidDirections();
 	m_map[playerPos.y][playerPos.x].drawDescription();
 	drawMap();
+	m_player.draw();
+	
 }

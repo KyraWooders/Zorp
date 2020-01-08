@@ -16,6 +16,7 @@ public:
 	bool isGameOver();
 
 private:
+	bool enableVirtualTerminal();
 	void initializeMap();
 
 	void drawWelcomeMessage();

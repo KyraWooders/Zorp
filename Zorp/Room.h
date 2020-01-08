@@ -16,9 +16,9 @@ public:
 	void drawDescription();
 
 	bool executeCommand(int command);
-
+/*
 private:
-	void waitForInput();
+	void waitForInput();*/
 
 private:
 	Point2D m_mapPosition;

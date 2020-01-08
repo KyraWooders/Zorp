@@ -32,38 +32,47 @@ int Room::getType()
 
 void Room::draw()
 {
+	int outX = INDENT_X + (6 * m_mapPosition.x) + 1;
+	int outY = MAP_Y + m_mapPosition.y;
+
+	std::cout << CSI << outY << ";" << outX << "H";
+
 	switch (m_type)
 	{
 	case EMPTY:
-		std::cout << EMPTY_TITLE;
+		std::cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ] ";
 		break;
 	case ENEMY:
-		std::cout << ENEMY_TITLE;
+		std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
 		break;
 	case TREASURE:
-		std::cout << TREASURE_TITLE;
+		std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
 		break;
 	case FOOD:
-		std::cout << FOOD_TITLE;
+		std::cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
 		break;
 	case ENTRANCE:
-		std::cout << ENTRANCE_TITLE;
+		std::cout << "[ " << WHITE << "\x9d" << RESET_COLOR << " ] ";
 		break;
 	case EXIT:
-		std::cout << EXIT_TITLE;
+		std::cout << "[ " << WHITE << "\xFE" << RESET_COLOR << " ] ";
 		break;
 	}
 }
 
 void Room::drawDescription()
 {
+	std::cout << RESET_COLOR;
+	std::cout << CSI << ROOM_DESC_Y << ";" << 0 << "H";
+	std::cout << CSI << "4M" << CSI << "4L" << std::endl;
+
 	switch (m_type)
 	{
 	case EMPTY:
 		std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
 		break;
 	case ENEMY:
-		std::cout << INDENT << "Beware. An enemy is approaching." << std::endl;
+		std::cout << INDENT << RED << "Beware." << RESET_COLOR << "An enemy is approaching." << std::endl;
 		break;
 	case TREASURE:
 		std::cout << INDENT << "Your journey has been rewarded. You have found some treasure" << std::endl;
@@ -85,27 +94,33 @@ bool Room::executeCommand(int command)
 	switch (command)
 	{
 	case LOOK:
-		std::cout << INDENT << "You look around, but see nothing worth mentioning" << std::endl;
+		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
 		std::cout << INDENT << "Press 'Enter' to continue.";
-		waitForInput();
-		break;
+		std::cin.clear();
+		std::cin.ignore(std::cin.rdbuf()->in_avail());
+		std::cin.get();
+		return true;
 	case FIGHT:
-		std::cout << INDENT << "You could try to fight, but yyou don't have a weapon" << std::endl;
+		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You could try to fight, but yyou don't have a weapon" << std::endl;
 		std::cout << INDENT << "Press 'Enter' to continue.";
-		waitForInput();
-		break;
+		std::cin.clear();
+		std::cin.ignore(std::cin.rdbuf()->in_avail());
+		std::cin.get();
+		return true;
 	default:
 		std::cout << INDENT << "You try, but you just can't do it." << std::endl;
 		std::cout << INDENT << "Press 'Enter' to continue.";
-		waitForInput();
+		std::cin.clear();
+		std::cin.ignore(std::cin.rdbuf()->in_avail());
+		std::cin.get();
 		break;
 	}
 	return false;
 }
 
-void Room::waitForInput()
-{
-	std::cin.clear();
-	std::cin.ignore(std::cin.rdbuf()->in_avail());
-	std::cin.get();
-}
+//void Room::waitForInput()
+//{
+//	std::cin.clear();
+//	std::cin.ignore(std::cin.rdbuf()->in_avail());
+//	std::cin.get();
+//}

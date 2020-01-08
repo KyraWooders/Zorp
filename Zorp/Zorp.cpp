@@ -8,6 +8,7 @@
 #include "Point2D.h"
 #include "GameDefines.h"
 #include "Game.h"
+#include <Windows.h>
 
 void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
 {
@@ -162,12 +163,12 @@ void drawRoomDesription(int roomType)
 //	return 0;
 //}
 
-void waitForInput()
-{
-	std::cin.clear();
-	std::cin.ignore(std::cin.rdbuf()->in_avail());
-	std::cin.get();
-}
+//void waitForInput()
+//{
+//	std::cin.clear();
+//	std::cin.ignore(std::cin.rdbuf()->in_avail());
+//	std::cin.get();
+//}
 
 int main()
 { 
@@ -186,7 +187,8 @@ int main()
 		game.draw();
 		game.update();
 	}
-	std::cout << std::endl << INDENT << "Press 'Enter' to exit the program." << std::endl;
+	std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+	std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
 	std::cin.clear();
 	std::cin.ignore(std::cin.rdbuf()->in_avail());
 	std::cin.get();
