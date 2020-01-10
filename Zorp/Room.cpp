@@ -4,11 +4,11 @@
 #include "GameDefines.h"
 
 
-Room::Room()
+Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }
 {
-	m_type = EMPTY;
+	/*m_type = EMPTY;
 	m_mapPosition.x = 0;
-	m_mapPosition.y = 0;
+	m_mapPosition.y = 0;*/
 }
 
 Room::~Room()
@@ -45,7 +45,10 @@ void Room::draw()
 	case ENEMY:
 		std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
 		break;
-	case TREASURE:
+	case TREASURE_HP:
+	case TREASURE_AT:
+	case TREASURE_DF:
+	/*case TREASURE:*/
 		std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
 		break;
 	case FOOD:
@@ -74,8 +77,11 @@ void Room::drawDescription()
 	case ENEMY:
 		std::cout << INDENT << RED << "Beware." << RESET_COLOR << "An enemy is approaching." << std::endl;
 		break;
-	case TREASURE:
-		std::cout << INDENT << "Your journey has been rewarded. You have found some treasure" << std::endl;
+	case TREASURE_HP:
+	case TREASURE_AT:
+	case TREASURE_DF:
+	/*case TREASURE:*/
+		std::cout << INDENT << "There apppers to be some treasure here. perhaps you should investigate futher." << std::endl;
 		break;
 	case FOOD:
 		std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
@@ -91,17 +97,25 @@ void Room::drawDescription()
 
 bool Room::executeCommand(int command)
 {
+	std::cout << EXTRA_OUTPUT_POS;
 	switch (command)
 	{
 	case LOOK:
-		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
+		if (m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF)
+		{
+			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some treasure here. It looks small enough to pick up." << std::endl;
+		}
+		else
+		{
+			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
+		}
 		std::cout << INDENT << "Press 'Enter' to continue.";
 		std::cin.clear();
 		std::cin.ignore(std::cin.rdbuf()->in_avail());
 		std::cin.get();
 		return true;
 	case FIGHT:
-		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You could try to fight, but yyou don't have a weapon" << std::endl;
+		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You could try to fight, but you don't have a weapon" << std::endl;
 		std::cout << INDENT << "Press 'Enter' to continue.";
 		std::cin.clear();
 		std::cin.ignore(std::cin.rdbuf()->in_avail());

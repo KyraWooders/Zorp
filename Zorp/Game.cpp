@@ -5,9 +5,9 @@
 #include <time.h>
 #include <windows.h>
 
-Game::Game()
+Game::Game() : m_gameOver{ false }
 {
-	m_gameOver = false;
+	//m_gameOver = false;
 }
 
 Game::~Game()
@@ -70,7 +70,11 @@ void Game::initializeMap()
 		{
 			int type = rand() % (MAX_RANDOM_TYPE * 2);
 			if (type < MAX_RANDOM_TYPE)
+			{
+				if (type == TREASURE)
+					type = rand() % 3 + TREASURE_HP;
 				m_map[y][x].setType(type);
+			}
 			else
 				m_map[y][x].setType(EMPTY);
 			m_map[y][x].setPosition(Point2D{ x, y });
@@ -119,10 +123,16 @@ void Game::drawValidDirections()
 int Game::getCommand()
 {
 	char input[50] = "\0";
+
 	std::cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+
 	std::cout << CSI << "4M";
+	std::cout << CSI << "4L";
+
 	std::cout << INDENT << "Enter a command:";
+
 	std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
+
 	std::cin.clear();
 	std::cin.ignore(std::cin.rdbuf()->in_avail());
 
@@ -130,6 +140,7 @@ int Game::getCommand()
 	std::cout << RESET_COLOR;
 
 	bool bMove = false;
+	bool bPickup = false;
 	while (input)
 	{
 		if (strcmp(input, "move") == 0)
@@ -147,15 +158,22 @@ int Game::getCommand()
 			if (strcmp(input, "west") == 0)
 				return WEST;
 		}
-
 		if (strcmp(input, "look") == 0)
 		{
 			return LOOK;
 		}
-
 		if (strcmp(input, "fight") == 0)
 		{
 			return FIGHT;
+		}
+		if (strcmp(input, "pick") == 0)
+		{
+			bPickup = true;
+		}
+		else if (bPickup == true)
+		{
+			if (strcmp(input, "up") == 0)
+				return PICKUP;
 		}
 
 		char next = std::cin.peek();
@@ -179,7 +197,8 @@ void Game::update()
 
 	int command = getCommand();
 
-	if (m_player.executeCommand(command))
+	if (m_player.executeCommand(command, 
+		m_map[playerPos.y][playerPos.x].getType()))
 		return;
 
 	m_map[playerPos.y][playerPos.x].executeCommand(command);

@@ -9,6 +9,8 @@
 #include "GameDefines.h"
 #include "Game.h"
 #include <Windows.h>
+#include "Room.h"
+#include "Player.h"
 
 void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
 {
@@ -80,30 +82,30 @@ void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
 //	std::cout << std::endl;
 //}
 
-void drawRoomDesription(int roomType)
-{
-	switch (roomType)
-	{
-	case EMPTY:
-		std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
-		break;
-	case ENEMY:
-		std::cout << INDENT << "Beware. An enemy is approaching." << std::endl;
-		break;
-	case TREASURE:
-		std::cout << INDENT << "Your journey has been rewarded. You have found some treasure" << std::endl;
-		break;
-	case FOOD:
-		std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
-		break;
-	case ENTRANCE:
-		std::cout << INDENT << "The entrance you used to enter this maze is blocked. There is no going back." << std::endl;
-		break;
-	case EXIT:
-		std::cout << INDENT << "Despite all odds, you made it to the exit. Congratulations." << std::endl;
-		break;
-	}
-}
+//void drawRoomDesription(int roomType)
+//{
+//	switch (roomType)
+//	{
+//	case EMPTY:
+//		std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
+//		break;
+//	case ENEMY:
+//		std::cout << INDENT << "Beware. An enemy is approaching." << std::endl;
+//		break;
+//	case TREASURE:
+//		std::cout << INDENT << "Your journey has been rewarded. You have found some treasure" << std::endl;
+//		break;
+//	case FOOD:
+//		std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
+//		break;
+//	case ENTRANCE:
+//		std::cout << INDENT << "The entrance you used to enter this maze is blocked. There is no going back." << std::endl;
+//		break;
+//	case EXIT:
+//		std::cout << INDENT << "Despite all odds, you made it to the exit. Congratulations." << std::endl;
+//		break;
+//	}
+//}
 
 //void drawVaildDirections(Point2D position)
 //{
