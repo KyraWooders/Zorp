@@ -170,6 +170,10 @@ int Game::getCommand()
 		{
 			bPickup = true;
 		}
+		if (strcmp(input, "exit") == 0)
+		{
+			return QUIT;
+		}
 		else if (bPickup == true)
 		{
 			if (strcmp(input, "up") == 0)
@@ -197,11 +201,16 @@ void Game::update()
 
 	int command = getCommand();
 
-	if (m_player.executeCommand(command, 
-		m_map[playerPos.y][playerPos.x].getType()))
+	if (command == QUIT)
+	{
+		m_gameOver = true;
+		return;
+	}
+
+	if (m_player.executeCommand(command))
 		return;
 
-	m_map[playerPos.y][playerPos.x].executeCommand(command);
+	m_map[playerPos.y][playerPos.x].executeCommand(command, &m_player);
 }
 
 void Game::draw()

@@ -39,9 +39,9 @@ float Powerup::getDefenceMultiplier()
 	return m_defenceMultiplier;
 }
 
-bool Powerup::compare(const Powerup& p1, const Powerup& p2)
+bool Powerup::compare(const Powerup* p1, const Powerup* p2)
 {
-	if (strcmp(p1.m_name, p2.m_name) < 0)
+	if (strcmp(p1->m_name, p2->m_name) < 0)
 	{
 		return true;
 	}
@@ -50,5 +50,5 @@ bool Powerup::compare(const Powerup& p1, const Powerup& p2)
 		return false;
 	}
 
-	return (strcmp(p1.m_name, p2.m_name) < 0) ? true : false;
+	return (strcmp(p1->m_name, p2->m_name) < 0) ? true : false;
 }

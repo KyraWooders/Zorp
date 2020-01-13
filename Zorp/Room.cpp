@@ -2,9 +2,19 @@
 #include "Room.h"
 #include <iostream>
 #include "GameDefines.h"
+#include "Player.h"
+#include "Powerup.h"
 
 
-Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }
+static const char itemNames[15][30] =
+	{		
+	    "yes", "invisibility", "why", "GG",
+		"stop", "impatience", "indecision", "please",
+		"high", "no", "integration", "invocation",
+		"inferno", "AAAAA", "inoculation"
+	};
+
+Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }, m_powerup{nullptr}
 {
 	/*m_type = EMPTY;
 	m_mapPosition.x = 0;
@@ -13,6 +23,8 @@ Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }
 
 Room::~Room()
 {
+	if (m_powerup != nullptr)
+		delete m_powerup;
 }
 
 void Room::setPosition(Point2D position)
@@ -23,6 +35,39 @@ void Room::setPosition(Point2D position)
 void Room::setType(int type)
 {
 	m_type = type;
+
+	if (!(m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF))
+		return;
+	if (m_powerup != nullptr)
+		return;
+
+	int item = rand() % 15; 
+	char name[30] = ""; 
+	
+	float hp = 1; 
+	float at = 1; 
+	float df = 1;
+
+	switch (type)
+		{
+		case TREASURE_HP:
+			strcpy_s(name, "potion of ");
+			hp = 1.1f;
+			break;
+		case TREASURE_AT:
+			strcpy_s(name, "sword of ");
+			at = 1.1f;
+			break;
+		case TREASURE_DF:
+			strcpy_s(name, "shield of ");
+			df = 1.1f;
+			break;
+		}
+
+	strncat_s(name, itemNames[item], 30);
+	if (m_powerup != nullptr)
+		delete m_powerup;
+	m_powerup = new Powerup(name, hp, at, df);
 }
 
 int Room::getType()
@@ -95,7 +140,7 @@ void Room::drawDescription()
 	}
 }
 
-bool Room::executeCommand(int command)
+bool Room::executeCommand(int command, Player* player)
 {
 	std::cout << EXTRA_OUTPUT_POS;
 	switch (command)
@@ -121,6 +166,8 @@ bool Room::executeCommand(int command)
 		std::cin.ignore(std::cin.rdbuf()->in_avail());
 		std::cin.get();
 		return true;
+	case PICKUP:
+		return pickup(player);
 	default:
 		std::cout << INDENT << "You try, but you just can't do it." << std::endl;
 		std::cout << INDENT << "Press 'Enter' to continue.";
@@ -131,6 +178,13 @@ bool Room::executeCommand(int command)
 	}
 	return false;
 }
+
+bool Room::pickup(Player* player)
+{
+	
+}
+
+
 
 //void Room::waitForInput()
 //{
