@@ -207,8 +207,8 @@ void Game::update()
 void Game::draw()
 {
 	Point2D playerPos = m_player.getPosition();
-	drawValidDirections();
 	m_map[playerPos.y][playerPos.x].drawDescription();
+	drawValidDirections();
 	drawMap();
 	m_player.draw();
 	

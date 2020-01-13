@@ -1,13 +1,18 @@
 #include "pch.h"
 #include "Powerup.h"
+#include <cstring>
 
 
 Powerup::Powerup()
 {
 }
 
-Powerup::Powerup(const char name[30], float health, float attack, float defence)
+Powerup::Powerup(const char name[30], float health, float attack, float defence) : 
+	m_healthMultiplier{health}, 
+	m_attackMultiplier{attack}, 
+	m_defenceMultiplier{defence}
 {
+	strcpy_s(m_name, name);
 }
 
 Powerup::~Powerup()
@@ -16,20 +21,34 @@ Powerup::~Powerup()
 
 char * Powerup::getName()
 {
-	return nullptr;
+	return m_name;
 }
 
 float Powerup::getHealthMultiplier()
 {
-	return 0.0f;
+	return m_healthMultiplier;
 }
 
 float Powerup::getAttackMultiplier()
 {
-	return 0.0f;
+	return m_attackMultiplier;
 }
 
 float Powerup::getDefenceMultiplier()
 {
-	return 0.0f;
+	return m_defenceMultiplier;
+}
+
+bool Powerup::compare(const Powerup& p1, const Powerup& p2)
+{
+	if (strcmp(p1.m_name, p2.m_name) < 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	return (strcmp(p1.m_name, p2.m_name) < 0) ? true : false;
 }

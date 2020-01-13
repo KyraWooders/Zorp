@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "GameDefines.h"
 #include <iostream>
+#include <cstring>
+#include <algorithm>
 
 Player::Player() : m_mapPosition{ 0, 0 }, m_healthPoints{100}, m_attackPoints{20}, m_defendPoints{20}
 {
@@ -41,7 +43,7 @@ void Player::draw()
 	std::cout << MAGENTA << "\x81" << RESET_COLOR;
 
 	std::cout << INVENTORY_OUTPUT_POS;
-	for (auto it = m_powerups.begin(); it < m_powerups.end(); it++)
+	for (std::vector<Powerup>::iterator it = m_powerups.begin(); it < m_powerups.end(); it++)
 	{
 		std::cout << (*it).getName() << "\t";
 	}
@@ -51,34 +53,36 @@ bool Player::pickup(int roomType)
 {
 	static const char itemNames[15][30] =
 	{
-		"indifference", "invisibility", "invulnerability", "incontinence",
-		"improbability", "impatience", "indecision", "inspiration",
-		"independence", "incurability", "integration", "invocation",
-		"inferno", "indigestion", "inoculation"
+		"yes", "invisibility", "why", "GG",
+		"stop", "impatience", "indecision", "please",
+		"high", "no", "integration", "invocation",
+		"inferno", "AAAAA", "inoculation"
 	};
 
 	int item = rand() % 15;
 
-	char* name;
+	char name[30];
 
 	switch (roomType)
 	{
 	case TREASURE_HP:
-		strcpy(name, "potion of ");
+		strcpy_s(name, "potion of ");
 		break;
 	case TREASURE_AT:
-		strcpy(name, "sword of ");
+		strcpy_s(name, "sword of ");
 		break;
 	case TREASURE_DF:
-		strcpy(name, "shield of ");
+		strcpy_s(name, "shield of ");
 		break;
 	default:
 		return false;
 	}
 
-	strncat(name, itemNames[item], 30);
-	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << name << std::endl;
+	strncat_s(name, itemNames[item], 30);
+	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << name << "." << std::endl;
 	m_powerups.push_back(Powerup(name, 1, 1, 1.1f));
+
+	std::sort(m_powerups.begin(), m_powerups.end(), Powerup::compare);
 
 	std::cout << INDENT << "Press 'Enter' to continue.";
 	std::cin.clear();
