@@ -181,7 +181,25 @@ bool Room::executeCommand(int command, Player* player)
 
 bool Room::pickup(Player* player)
 {
-	
+	if (m_powerup == nullptr)
+	{
+		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is nothing here to pick up." << std::endl;
+		return true;
+	}
+
+	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << m_powerup->getName() << std::endl;
+
+	player->addPowerup(m_powerup);
+
+	m_powerup = nullptr;
+
+	m_type = EMPTY;
+
+	std::cout << INDENT << "Press 'Enter' to continue.";
+	std::cin.clear();
+	std::cin.ignore(std::cin.rdbuf()->in_avail());
+	std::cin.get();
+	return true;
 }
 
 

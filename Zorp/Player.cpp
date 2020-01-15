@@ -63,50 +63,6 @@ void Player::draw()
 	}
 }
 
-//bool Player::pickup(Room* room)
-//{
-//	static const char itemNames[15][30] =
-//	{
-//		"yes", "invisibility", "why", "GG",
-//		"stop", "impatience", "indecision", "please",
-//		"high", "no", "integration", "invocation",
-//		"inferno", "AAAAA", "inoculation"
-//	};
-//
-//	int item = rand() % 15;
-//
-//	char name[30];
-//
-//	switch (room->getType())
-//	{
-//	case TREASURE_HP:
-//		strcpy_s(name, "potion of ");
-//		break;
-//	case TREASURE_AT:
-//		strcpy_s(name, "sword of ");
-//		break;
-//	case TREASURE_DF:
-//		strcpy_s(name, "shield of ");
-//		break;
-//	default:
-//		return false;
-//	}
-//
-//	strncat_s(name, itemNames[item], 30);
-//	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << name << "." << std::endl;
-//	m_powerups.push_back(Powerup(name, 1, 1, 1.1f));
-//
-//	room->setType(EMPTY);
-//
-//	std::sort(m_powerups.begin(), m_powerups.end(), Powerup::compare);
-//
-//	std::cout << INDENT << "Press 'Enter' to continue.";
-//	std::cin.clear();
-//	std::cin.ignore(std::cin.rdbuf()->in_avail());
-//	std::cin.get();
-//	return true;
-//}
-
 bool Player::executeCommand(int command)
 {
 	switch (command)

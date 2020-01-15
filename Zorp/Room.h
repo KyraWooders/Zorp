@@ -2,7 +2,7 @@
 #include "Point2D.h"
 
 class Powerup;
-class PLayer;
+class Player;
 
 class Room
 {

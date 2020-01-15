@@ -2,7 +2,7 @@
 #include "Point2D.h"
 #include <vector>
 
-class Room;
+//class Room;
 class Powerup;
 
 class Player
