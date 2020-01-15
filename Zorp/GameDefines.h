@@ -16,17 +16,9 @@ const char* const EXTRA_OUTPUT_POS = "\x1b[25;6H";
 const char* const INVENTORY_OUTPUT_POS = "\x1b[24;6H";
 
 const int EMPTY = 0;
-const int ENEMY = 1;
-const int TREASURE = 2;
-const int FOOD = 3;
 
-const int ENTRANCE = 4;
-const int EXIT = 5;
-const int TREASURE_HP = 6;
-const int TREASURE_AT = 7;
-const int TREASURE_DF = 8;
-
-const int MAX_RANDOM_TYPE = FOOD + 1;
+const int ENTRANCE = EMPTY+1;
+const int EXIT = ENTRANCE+1;
 
 const int MAZE_WIDTH = 10;
 const int MAZE_HEIGHT = 6;
@@ -47,3 +39,12 @@ const int LOOK = 9;
 const int FIGHT = 10;
 const int PICKUP = 11;
 const int QUIT = 12;
+
+
+static const char itemNames[15][30] =
+{
+	"yes", "invisibility", "why", "GG",
+	"stop", "impatience", "indecision", "please",
+	"high", "no", "integration", "invocation",
+	"inferno", "AAAAA", "inoculation"
+};

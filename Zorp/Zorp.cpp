@@ -12,27 +12,27 @@
 #include "Room.h"
 #include "Player.h"
 
-void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
-{
-	srand(time(nullptr));
-
-	for (int y = 0; y < MAZE_HEIGHT; y++)
-	{
-		for (int x = 0; x < MAZE_WIDTH; x++)
-		{
-			int type = rand() % (MAX_RANDOM_TYPE * 2);
-			if (type < MAX_RANDOM_TYPE)
-			{
-				map[y][x] = type;
-			}
-
-			map[y][x] = EMPTY;
-		}
-	}
-
-	map[0][0] = ENTRANCE;
-	map[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
-}
+//void initialize(int map[MAZE_HEIGHT][MAZE_WIDTH])
+//{
+//	srand(time(nullptr));
+//
+//	for (int y = 0; y < MAZE_HEIGHT; y++)
+//	{
+//		for (int x = 0; x < MAZE_WIDTH; x++)
+//		{
+//			int type = rand() % 2;
+//			if (type < MAX_RANDOM_TYPE)
+//			{
+//				map[y][x] = type;
+//			}
+//
+//			map[y][x] = EMPTY;
+//		}
+//	}
+//
+//	map[0][0] = ENTRANCE;
+//	map[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
+//}
 
 //void drawWelcomeMessage()
 //{
