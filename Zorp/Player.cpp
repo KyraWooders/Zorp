@@ -9,13 +9,14 @@
 #include "Enemy.h"
 #include "Powerup.h"
 
-Player::Player() : m_mapPosition{ 0, 0 }, m_healthPoints{100}, m_attackPoints{20}, m_defendPoints{20}
+Player::Player() : Character({ 0,0 }, 100, 20, 20)
 {
+	m_priority = PRIORITY_PLAYER;
 	/*m_mapPosition.x = 0;
 	m_mapPosition.y = 0;*/
 }
 
-Player::Player(int x, int y) : m_mapPosition{ x, y }, m_healthPoints{ 100 }, m_attackPoints{ 20 }, m_defendPoints{ 20 }
+Player::Player(int x, int y) : Character({ x,y }, 100, 20, 20)
 {
 	/*m_mapPosition.x = x;
 	m_mapPosition.y = y;*/
@@ -28,23 +29,6 @@ Player::~Player()
 		delete *it;
 	}
 	m_powerups.clear();*/
-}
-
-void Player::addPowerup(Powerup * powerup)
-{
-	m_powerups.push_back(powerup); 
-	
-	std::sort(m_powerups.begin(), m_powerups.end(), Powerup::compare);
-}
-
-void Player::setPosition(const Point2D& position)
-{
-	m_mapPosition = position;
-}
-
-Point2D Player::getPosition()
-{
-	return m_mapPosition;
 }
 
 void Player::draw()
@@ -63,6 +47,16 @@ void Player::draw()
 	{
 		std::cout << (*it)->getName() << "\t";
 	}
+}
+
+void Player::drawDescription()
+{
+
+}
+
+void Player::lookAt()
+{
+	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "Hmmm, I look good!" << std::endl;
 }
 
 void Player::executeCommand(int command, Room* room)
@@ -86,22 +80,7 @@ void Player::executeCommand(int command, Room* room)
 			m_mapPosition.y++;
 		return;
 	case LOOK:
-		if (room->getEnemy() != nullptr)
-		{
-			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "LOOK OUT! An enemy is approaching." << std::endl;
-		}
-		else if (room->getPowerup() != nullptr)
-		{
-			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some treasure here. It looks small enough to pick up." << std::endl;
-		}
-		else if (room->getFood() != nullptr)
-		{
-			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some food here. It should be edible." << std::endl;
-		}
-		else
-		{
-			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
-		}
+		room->lookAt();
 		break;
 	case FIGHT:
 		attack(room->getEnemy());
@@ -125,21 +104,25 @@ void Player::executeCommand(int command, Room* room)
 
 void Player::pickup(Room * room)
 {
+	Powerup* powerup = room->getPowerup();
+	Food* food = room->getFood();
+	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR;
+
 	if (room->getPowerup() != nullptr)
 	{
-		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << room->getPowerup()->getName() <<"."<< std::endl;
-		addPowerup(room->getPowerup());
-		room->setPowerup(nullptr);
+		std::cout << "You pick up the " << powerup->getName() <<"."<< std::endl;
+		addPowerup(powerup);
+		room->removeGameObject(powerup);
 	}
 	else if (room->getFood() != nullptr)
 	{
-		m_healthPoints += room->getFood()->getHP();
-		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You feel refreshed. Your health is now " << m_healthPoints << std::endl;
-		room->setFood(nullptr);
+		m_healthPoints += food->getHP();
+		std::cout << "You feel refreshed. Your health is now " << m_healthPoints << std::endl;
+		room->removeGameObject(food);
 	}
 	else
 	{
-		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is nothing here to pick up." << std::endl;
+		std::cout << "There is nothing here to pick up." << std::endl;
 	}
 }
 
@@ -159,7 +142,8 @@ void Player::attack(Enemy * enemy)
 		}
 		else
 		{
-			int damage = enemy->getAT() - m_defendPoints;
+			int damage = enemy->getAP() - m_defensePoints;
+			if (damage < 1) damage = 1;
 			m_healthPoints -= damage;
 
 			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You fight a grue and take " << damage << " points damage. Your health is now at " << m_healthPoints << "." << std::endl;

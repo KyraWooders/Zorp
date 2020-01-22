@@ -4,10 +4,12 @@
 #include "GameDefines.h"
 #include "Player.h"
 #include "Powerup.h"
+#include "GameObject.h"
+#include "Enemy.h"
+#include <algorithm>
 
 
-
-Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }, m_powerup{ nullptr }, m_enemy{ nullptr }, m_food{ nullptr }
+Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0, 0 }
 {
 	/*m_type = EMPTY;
 	m_mapPosition.x = 0;
@@ -28,44 +30,24 @@ void Room::setPosition(Point2D position)
 void Room::setType(int type)
 {
 	m_type = type;
-/*
-	if (!(m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF))
-		return;
-	if (m_powerup != nullptr)
-		return;
-
-	int item = rand() % 15; 
-	char name[30] = ""; 
-	
-	float hp = 1; 
-	float at = 1; 
-	float df = 1;
-
-	switch (type)
-		{
-		case TREASURE_HP:
-			strcpy_s(name, "potion of ");
-			hp = 1.1f;
-			break;
-		case TREASURE_AT:
-			strcpy_s(name, "sword of ");
-			at = 1.1f;
-			break;
-		case TREASURE_DF:
-			strcpy_s(name, "shield of ");
-			df = 1.1f;
-			break;
-		}
-
-	strncat_s(name, itemNames[item], 30);
-	if (m_powerup != nullptr)
-		delete m_powerup;
-	m_powerup = new Powerup(name, hp, at, df);*/
 }
 
-int Room::getType()
+void Room::addGameObject(GameObject* object)
 {
-	return m_type;
+	m_objects.push_back(object);
+	std::sort(m_objects.begin(), m_objects.end(), GameObject::compare);
+}
+
+void Room::removeGameObject(GameObject* object)
+{
+	for (auto it = m_objects.begin(); it != m_objects.end(); it++)
+	{
+		if (*it == object)
+		{
+			m_objects.erase(it);
+			return;
+		}
+	}
 }
 
 void Room::draw()
@@ -78,35 +60,11 @@ void Room::draw()
 	switch (m_type)
 	{
 	case EMPTY:
-		if (m_enemy != nullptr)
-		{
-			std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
-			break;
-		}
-		if (m_powerup != nullptr)
-		{
-			std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
-			break;
-		}
-		if (m_food != nullptr)
-		{
-			std::cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
-			break;
-		}
-		std::cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ] ";
+		if (m_objects.size() > 0)
+			  m_objects[0]->draw();
+		else
+		      std::cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ] ";
 		break;
-	//case ENEMY:
-	//	std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
-	//	break;
-	//case TREASURE_HP:
-	//case TREASURE_AT:
-	//case TREASURE_DF:
-	///*case TREASURE:*/
-	//	std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
-	//	break;
-	//case FOOD:
-	//	std::cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
-	//	break;
 	case ENTRANCE:
 		std::cout << "[ " << WHITE << "\x9d" << RESET_COLOR << " ] ";
 		break;
@@ -125,35 +83,11 @@ void Room::drawDescription()
 	switch (m_type)
 	{
 	case EMPTY:
-		if (m_enemy != nullptr)
-		{
-			std::cout << INDENT << RED << "Beware." << RESET_COLOR << "An enemy is approaching." << std::endl;
-			break;
-		}
-		if (m_powerup != nullptr)
-		{
-			std::cout << INDENT << "There apppers to be some treasure here. perhaps you should investigate futher." << std::endl;
-			break;
-		}
-		if (m_food != nullptr)
-		{
-			std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
-			break;
-		}
-		std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
+		if (m_objects.size() > 0)
+			  m_objects[0]->drawDescription();
+		else
+		      std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
 		break;
-	//case ENEMY:
-	//	std::cout << INDENT << RED << "Beware." << RESET_COLOR << "An enemy is approaching." << std::endl;
-	//	break;
-	//case TREASURE_HP:
-	//case TREASURE_AT:
-	//case TREASURE_DF:
-	///*case TREASURE:*/
-	//	std::cout << INDENT << "There apppers to be some treasure here. perhaps you should investigate futher." << std::endl;
-	//	break;
-	//case FOOD:
-	//	std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
-	//	break;
 	case ENTRANCE:
 		std::cout << INDENT << "The entrance you used to enter this maze is blocked. There is no going back." << std::endl;
 		break;
@@ -163,73 +97,43 @@ void Room::drawDescription()
 	}
 }
 
-//bool Room::executeCommand(int command, Player* player)
-//{
-//	std::cout << EXTRA_OUTPUT_POS;
-//	switch (command)
-//	{
-//	case LOOK:
-//		if (m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF)
-//		{
-//			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some treasure here. It looks small enough to pick up." << std::endl;
-//		}
-//		else
-//		{
-//			std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
-//		}
-//		std::cout << INDENT << "Press 'Enter' to continue.";
-//		std::cin.clear();
-//		std::cin.ignore(std::cin.rdbuf()->in_avail());
-//		std::cin.get();
-//		return true;
-//	case FIGHT:
-//		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You could try to fight, but you don't have a weapon" << std::endl;
-//		std::cout << INDENT << "Press 'Enter' to continue.";
-//		std::cin.clear();
-//		std::cin.ignore(std::cin.rdbuf()->in_avail());
-//		std::cin.get();
-//		return true;
-//	case PICKUP:
-//		return pickup(player);
-//	default:
-//		std::cout << INDENT << "You try, but you just can't do it." << std::endl;
-//		std::cout << INDENT << "Press 'Enter' to continue.";
-//		std::cin.clear();
-//		std::cin.ignore(std::cin.rdbuf()->in_avail());
-//		std::cin.get();
-//		break;
-//	}
-//	return false;
-//}
-//
-//bool Room::pickup(Player* player)
-//{
-//	if (m_powerup == nullptr)
-//	{
-//		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is nothing here to pick up." << std::endl;
-//		return true;
-//	}
-//
-//	std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << m_powerup->getName() << std::endl;
-//
-//	player->addPowerup(m_powerup);
-//
-//	m_powerup = nullptr;
-//
-//	m_type = EMPTY;
-//
-//	std::cout << INDENT << "Press 'Enter' to continue.";
-//	std::cin.clear();
-//	std::cin.ignore(std::cin.rdbuf()->in_avail());
-//	std::cin.get();
-//	return true;
-//}
+void Room::lookAt()
+{
+	if (m_objects.size() > 0)
+		m_objects[0]->lookAt();
+	else
+		std::cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning" << std::endl;
+}
 
+Enemy* Room::getEnemy()
+{
+	for each (GameObject* Obj in m_objects)
+	{
+		Enemy* enemy = dynamic_cast<Enemy*>(Obj);
+		if (enemy != nullptr)
+			return enemy;
+	}
+	return nullptr;
+}
 
+Powerup* Room::getPowerup()
+{
+	for each (GameObject* Obj in m_objects)
+	{
+		Powerup* powerup = dynamic_cast<Powerup*>(Obj);
+		if (powerup != nullptr)
+			return powerup;
+	}
+	return nullptr;
+}
 
-//void Room::waitForInput()
-//{
-//	std::cin.clear();
-//	std::cin.ignore(std::cin.rdbuf()->in_avail());
-//	std::cin.get();
-//}
+Food* Room::getFood()
+{
+	for each (GameObject* Obj in m_objects)
+	{
+		Food* food = dynamic_cast<Food*>(Obj);
+		if (food != nullptr)
+			return food;
+	}
+	return nullptr;
+}

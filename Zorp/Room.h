@@ -2,7 +2,7 @@
 #include "Point2D.h"
 
 class Powerup;
-class Player;
+class GameObject;
 class Enemy;
 class Food;
 
@@ -14,17 +14,18 @@ public:
 
 	void setPosition(Point2D position);
 	void setType(int type);
-	void setEnemy(Enemy* enemy) { m_enemy = enemy; }
-	void setPowerup(Powerup* powerup) { m_powerup = powerup; }
-	void setFood(Food* food) { m_food = food; }
+	
+	int getType() { return m_type; }
+	Enemy* getEnemy();
+	Powerup* getPowerup();
+	Food* getFood();
 
-	int getType();
-	Enemy* getEnemy() { return m_enemy; }
-	Powerup* getPowerup() { return m_powerup; }
-	Food* getFood() { return m_food; }
+	void addGameObject(GameObject* object);
+	void removeGameObject(GameObject* object);
 
 	void draw();
 	void drawDescription();
+	void lookAt(); 
 
 	/*bool executeCommand(int command, Player* player);
 
@@ -35,8 +36,6 @@ private:
 	Point2D m_mapPosition;
 	int m_type;
 
-	Powerup* m_powerup;
-	Enemy* m_enemy;
-	Food* m_food;
+	std::vector < GameObject*> m_objects;
 };
 

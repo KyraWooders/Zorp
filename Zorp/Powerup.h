@@ -1,5 +1,7 @@
 #pragma once
-class Powerup
+#include "GameObject.h"
+
+class Powerup : public GameObject
 {
 public:
 	Powerup();
@@ -7,9 +9,9 @@ public:
 	~Powerup();
 
 	char* getName();
-	float getHealthMultiplier();
-	float getAttackMultiplier();
-	float getDefenceMultiplier();
+	float getHealthMultiplier() { return m_healthMultiplier; }
+	float getAttackMultiplier() { return m_attackMultiplier; }
+	float getDefenceMultiplier() { return m_defenceMultiplier; }
 
 	void setName(const char* pStr); 
 	void setHealthMultiplier(float health) { m_healthMultiplier = health; } 
@@ -17,6 +19,10 @@ public:
 	void setDefenceMultiplier(float defence) { m_defenceMultiplier = defence; }
 
 	static bool compare(const Powerup* p1, const Powerup* p2);
+
+	void draw();
+	void drawDescription();
+	void lookAt();
 
 private:
 	char m_name[30];
